@@ -57,6 +57,9 @@ export async function POST(request: NextRequest) {
         style,
         sizeTier,
       },
+      // Stripe Checkout collects the customer email by default.
+      // Enable "Successful payments" emails in Stripe Dashboard >
+      // Settings > Emails to send automatic receipts.
     });
 
     return NextResponse.json({ url: session.url });
