@@ -1,7 +1,15 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { list, del } from '@vercel/blob';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Only allow Vercel Cron or requests with the correct secret
+  const authHeader = request.headers.get('authorization');
+  const cronSecret = process.env.CRON_SECRET;
+
+  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const cutoff = new Date(Date.now() - 48 * 60 * 60 * 1000); // 48 hours ago
     const { blobs } = await list({ prefix: 'mosaics/' });

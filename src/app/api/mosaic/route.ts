@@ -3,12 +3,21 @@ import { nanoid } from 'nanoid';
 import { mosaicSchema } from '@/lib/validation';
 import { generateMosaic } from '@/lib/sharp/mosaic-engine';
 import { uploadImage, uploadJson } from '@/lib/storage';
+import { rateLimit } from '@/lib/rate-limit';
 
 export const maxDuration = 120;
 
 export async function POST(request: NextRequest) {
+  const limited = rateLimit(request, { limit: 5, windowSeconds: 60 });
+  if (limited) return limited;
+
   try {
-    const body = await request.json();
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+    }
     const parsed = mosaicSchema.safeParse(body);
 
     if (!parsed.success) {

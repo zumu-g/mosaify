@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { list } from '@vercel/blob';
 import { getJsonData } from '@/lib/storage';
+import { isValidId } from '@/lib/validation';
 
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
+
+  if (!isValidId(id)) {
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+  }
 
   try {
     // Check payment status
