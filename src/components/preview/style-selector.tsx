@@ -1,5 +1,6 @@
 'use client';
 
+import { motion, useReducedMotion } from 'framer-motion';
 import { STYLE_CONFIGS } from '@/lib/constants';
 import { MosaicStyle } from '@/types';
 import { Card } from '@/components/ui/card';
@@ -39,23 +40,33 @@ const styleIcons: Record<MosaicStyle, React.ReactNode> = {
 };
 
 export function StyleSelector({ selected, onSelect }: StyleSelectorProps) {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <div className="grid grid-cols-2 gap-4">
-      {STYLE_CONFIGS.map((config) => (
-        <Card
+      {STYLE_CONFIGS.map((config, i) => (
+        <motion.div
           key={config.style}
-          selected={selected === config.style}
-          className="cursor-pointer"
-          onClick={() => onSelect(config.style)}
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: 'easeOut', delay: i * 0.05 }}
+          whileHover={prefersReducedMotion ? {} : { scale: 1.03 }}
+          whileTap={prefersReducedMotion ? {} : { scale: 0.97 }}
         >
-          <div className="flex flex-col items-center gap-3 text-center">
-            {styleIcons[config.style]}
-            <div>
-              <p className="font-semibold text-gray-900">{config.label}</p>
-              <p className="mt-1 text-xs text-gray-500">{config.description}</p>
+          <Card
+            selected={selected === config.style}
+            className="cursor-pointer"
+            onClick={() => onSelect(config.style)}
+          >
+            <div className="flex flex-col items-center gap-3 text-center">
+              {styleIcons[config.style]}
+              <div>
+                <p className="font-semibold text-gray-900">{config.label}</p>
+                <p className="mt-1 text-xs text-gray-500">{config.description}</p>
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </motion.div>
       ))}
     </div>
   );

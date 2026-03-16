@@ -1,15 +1,18 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { MosaicStyle, SizeTier } from '@/types';
 import { StyleSelector } from '@/components/preview/style-selector';
 import { SizeSelector } from '@/components/preview/size-selector';
+import { TileSizeSlider } from '@/components/preview/tile-size-slider';
 import { MosaicPreview } from '@/components/preview/mosaic-preview';
 import { CheckoutButton } from '@/components/preview/checkout-button';
 import { Button } from '@/components/ui/button';
 import { useMosaic } from '@/hooks/use-mosaic';
+import { DEFAULT_TILE_SIZES } from '@/lib/constants';
 import Link from 'next/link';
+import { LogoWithText } from '@/components/ui/logo';
 
 function PreviewContent() {
   const searchParams = useSearchParams();
@@ -18,12 +21,17 @@ function PreviewContent() {
 
   const [style, setStyle] = useState<MosaicStyle>('pixel-grid');
   const [sizeTier, setSizeTier] = useState<SizeTier>('large');
+  const [tileSize, setTileSize] = useState<number>(DEFAULT_TILE_SIZES['pixel-grid']);
+
+  useEffect(() => {
+    setTileSize(DEFAULT_TILE_SIZES[style]);
+  }, [style]);
 
   const { generating, error, mosaicId, previewUrl, generate } = useMosaic();
 
   const handleGenerate = () => {
     if (!imageId || !imageUrl) return;
-    generate(imageId, imageUrl, style, sizeTier);
+    generate(imageId, imageUrl, style, sizeTier, tileSize);
   };
 
   if (!imageId || !imageUrl) {
@@ -40,10 +48,10 @@ function PreviewContent() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="border-b border-gray-200 bg-white px-6 py-4">
+      <header className="border-b border-stone-200 bg-stone-50 px-6 py-4">
         <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-brand-700">
-            Mosaify
+          <Link href="/">
+            <LogoWithText size={28} />
           </Link>
           <Link href="/">
             <Button variant="ghost" size="sm">
@@ -64,6 +72,7 @@ function PreviewContent() {
               previewUrl={previewUrl}
               loading={generating}
               error={error}
+              originalUrl={imageUrl}
             />
           </div>
 
@@ -83,6 +92,17 @@ function PreviewContent() {
               <SizeSelector selected={sizeTier} onSelect={setSizeTier} />
             </div>
 
+            <div>
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">
+                Tile Size
+              </h2>
+              <TileSizeSlider
+                value={tileSize}
+                onChange={setTileSize}
+                style={style}
+              />
+            </div>
+
             <Button
               size="lg"
               className="w-full"
@@ -94,7 +114,6 @@ function PreviewContent() {
             </Button>
 
             <CheckoutButton
-              imageId={imageId}
               mosaicId={mosaicId}
               style={style}
               sizeTier={sizeTier}

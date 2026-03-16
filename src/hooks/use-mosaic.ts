@@ -12,7 +12,8 @@ interface UseMosaicReturn {
     imageId: string,
     imageUrl: string,
     style: MosaicStyle,
-    sizeTier: SizeTier
+    sizeTier: SizeTier,
+    tileSize?: number
   ) => Promise<void>;
   reset: () => void;
 }
@@ -35,7 +36,8 @@ export function useMosaic(): UseMosaicReturn {
       imageId: string,
       imageUrl: string,
       style: MosaicStyle,
-      sizeTier: SizeTier
+      sizeTier: SizeTier,
+      tileSize?: number
     ) => {
       setGenerating(true);
       setError(null);
@@ -46,7 +48,7 @@ export function useMosaic(): UseMosaicReturn {
         const response = await fetch('/api/mosaic', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ imageId, imageUrl, style, sizeTier }),
+          body: JSON.stringify({ imageId, imageUrl, style, sizeTier, tileSize }),
         });
 
         if (!response.ok) {

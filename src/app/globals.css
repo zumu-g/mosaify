@@ -1,26 +1,125 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-brand-50: #f5f3ff;
-  --color-brand-100: #ede9fe;
-  --color-brand-200: #ddd6fe;
-  --color-brand-300: #c4b5fd;
-  --color-brand-400: #a78bfa;
-  --color-brand-500: #8b5cf6;
-  --color-brand-600: #7c3aed;
-  --color-brand-700: #6d28d9;
-  --color-brand-800: #5b21b6;
-  --color-brand-900: #4c1d95;
-  --color-brand-950: #2e1065;
+  /* Warm mosaic-inspired palette — terracotta, gold, stone */
+  --color-brand-50: #fef7f0;
+  --color-brand-100: #fdecd8;
+  --color-brand-200: #f9d4ae;
+  --color-brand-300: #f0b67a;
+  --color-brand-400: #e8954a;
+  --color-brand-500: #c75b39;
+  --color-brand-600: #b04a2e;
+  --color-brand-700: #8f3a24;
+  --color-brand-800: #6e2d1c;
+  --color-brand-900: #4a1e13;
+  --color-brand-950: #2d110a;
 
-  --color-background: #ffffff;
-  --color-foreground: #171717;
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Accent: warm gold */
+  --color-gold-50: #fefce8;
+  --color-gold-100: #fef9c3;
+  --color-gold-200: #fef08a;
+  --color-gold-300: #fde047;
+  --color-gold-400: #d4a853;
+  --color-gold-500: #b8942e;
+  --color-gold-600: #946f1e;
+  --color-gold-700: #6d5117;
+
+  /* Accent: olive/sage */
+  --color-sage-50: #f4f7f1;
+  --color-sage-100: #e4ead9;
+  --color-sage-200: #c9d5b5;
+  --color-sage-300: #a8b98c;
+  --color-sage-400: #7a8b6f;
+  --color-sage-500: #5e6e55;
+  --color-sage-600: #485541;
+
+  /* Warm neutrals — stone/cream */
+  --color-stone-50: #faf8f5;
+  --color-stone-100: #f3efe8;
+  --color-stone-200: #e8ddd0;
+  --color-stone-300: #d6c8b5;
+  --color-stone-400: #b8a78f;
+  --color-stone-500: #9a8b73;
+  --color-stone-600: #7a6e5a;
+  --color-stone-700: #5c5243;
+  --color-stone-800: #3d372d;
+  --color-stone-900: #2a241d;
+
+  --color-background: #faf8f5;
+  --color-foreground: #2a241d;
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-body);
+  --font-heading: var(--font-heading);
 }
 
 body {
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Full-page grain overlay — adds tactile paper/stone feel */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  mix-blend-mode: multiply;
+}
+
+/* Mosaic tessera background — tiny tiles with grout gaps */
+.bg-tessera {
+  background-color: #f3efe8;
+  background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='24' height='24' fill='%23e8ddd0'/%3E%3Crect x='1' y='1' width='10' height='10' rx='0.5' fill='%23f3efe8'/%3E%3Crect x='13' y='1' width='10' height='10' rx='0.5' fill='%23ede5d8'/%3E%3Crect x='1' y='13' width='10' height='10' rx='0.5' fill='%23ede5d8'/%3E%3Crect x='13' y='13' width='10' height='10' rx='0.5' fill='%23f3efe8'/%3E%3C/svg%3E");
+}
+
+/* Limestone card surface */
+.surface-stone {
+  background: linear-gradient(
+    145deg,
+    #f3efe8 0%,
+    #ede5d8 30%,
+    #f0eae0 60%,
+    #e8ddd0 100%
+  );
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.6) inset,
+    0 2px 8px -2px rgba(61, 43, 31, 0.12),
+    0 8px 24px -4px rgba(61, 43, 31, 0.08);
+}
+
+/* Gold shimmer for special text */
+.gold-shimmer {
+  background: linear-gradient(
+    135deg,
+    #d4a853 0%,
+    #e8c864 25%,
+    #d4a853 50%,
+    #c49a42 75%,
+    #d4a853 100%
+  );
+  background-size: 300% 300%;
+  animation: shimmer 8s ease-in-out infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gold-shimmer { animation: none; }
+  body::after { display: none; }
+}
+
+@keyframes shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Heading font utility */
+.font-heading {
+  font-family: var(--font-heading), Georgia, serif;
 }

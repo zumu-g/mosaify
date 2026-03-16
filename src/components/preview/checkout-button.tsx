@@ -6,7 +6,6 @@ import { Spinner } from '@/components/ui/spinner';
 import { MosaicStyle, SizeTier } from '@/types';
 
 interface CheckoutButtonProps {
-  imageId: string;
   mosaicId: string | null;
   style: MosaicStyle;
   sizeTier: SizeTier;
@@ -15,7 +14,6 @@ interface CheckoutButtonProps {
 }
 
 export function CheckoutButton({
-  imageId,
   mosaicId,
   style,
   sizeTier,
